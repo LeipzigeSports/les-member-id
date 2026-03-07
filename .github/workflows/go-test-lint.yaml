@@ -1,0 +1,46 @@
+name: Lint and test source code
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - go.mod
+      - go.sum
+      - "**/*.go"
+      - .golangci.yaml
+
+env:
+  GOVERSION: 1.26.0
+  GOLANGCI_LINT_VERSION: 2.10.1
+
+jobs:
+  lint:
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GOVERSION }}
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v${{ env.GOLANGCI_LINT_VERSION }}
+  
+  test:
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ env.GOVERSION }}
+      - name: Run tests
+        shell: bash
+        run: |
+          go test -v -count=1 -race ./...

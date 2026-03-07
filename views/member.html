@@ -1,0 +1,23 @@
+{{ define "head" }}
+<link rel="stylesheet" type="text/css" href="/static/css/member.css">
+{{ end }}
+{{ define "content" }}
+<h1 class="text-center">{{ .GivenName }} {{ .FamilyName }}</h1>
+<div class="qr">
+    <img class="w-qr" src="/qr/{{ .Code }}">
+</div>
+<p>
+    Mit dem Scannen dieses Codes kann der Mitgliedsstatus überprüft werden.
+</p>
+{{ end }}
+{{ define "footer" }}
+<div class="exp-container">
+    <div class="exp exp-bg">Gültig für&nbsp;<span class="exp-time">0:00</span></div>
+    <div class="exp exp-fg">Gültig für&nbsp;<span class="exp-time">0:00</span></div>
+</div>
+{{ end }}
+{{ define "script" }}
+<input type="hidden" id="code-ttl" name="code-ttl" value="{{ .CodeTTLSecs }}">
+<input type="hidden" id="code-ttl-max" code="code-ttl-max" value="{{ .CodeTTLSecsMax }}">
+<script src="/static/js/member.js"></script>
+{{ end }}

@@ -1,0 +1,31 @@
+name: Check PR title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check conventional commit message
+        shell: bash
+        run: |
+          CONVENTIONAL_COMMIT_REGEX='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([[:alnum:]._-]+\))?(!)?: ([[:alnum:]])+([[:space:][:print:]]*)'
+          
+          echo "Checking \"${{ inputs.value }}\"..."
+
+          if ! echo "${{ inputs.value }}" | grep -iqE "$CONVENTIONAL_COMMIT_REGEX";
+          then
+            echo "Input is not a valid conventional commit message."
+            echo "Please refer the specification: https://www.conventionalcommits.org/en/v1.0.0/"
+            exit 1
+          else
+            echo "Input is valid :)"
+          fi

@@ -1,0 +1,14 @@
+{{ define "head" }}
+<link rel="stylesheet" type="text/css" href="/static/css/verify.css">
+{{ end }}
+{{ define "content" }}
+{{ if .Valid }}
+<h1>Gültig</h1>
+<p>Der gescannte Code ist für ein aktives Mitglied des Vereins ausgestellt.</p>
+{{ else }}
+<h1>Nicht gültig</h1>
+<p>Der gescannte Code ist ausgelaufen oder ungültig.</p>
+{{ end }}
+{{ end }}
+{{ define "footer" }}{{ end }}
+{{ define "script" }}{{ end }}

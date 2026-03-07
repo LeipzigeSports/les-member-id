@@ -1,0 +1,18 @@
+services:
+
+  member-id:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./views:/opt/member-id/views
+      - ./static:/opt/member-id/static
+    ports:
+      - "8080:8080"
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"

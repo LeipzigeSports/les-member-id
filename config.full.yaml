@@ -1,0 +1,25 @@
+baseUrl: http://localhost:8080
+host: 0.0.0.0
+port: 8080
+secretKey: YOUR_SECRET_KEY
+siteTitle: Digital Member ID
+
+qr:
+  fgColorHex: "000000"
+  bgColorHex: "ffffff"
+  blockWidth: 16
+
+code:
+  length: 8
+  alphabet: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+  ttl: 5m
+
+oauth:
+  realmUrl: http://your.idp.test
+  clientId: YOUR_CLIENT_ID
+  clientSecret: YOUR_CLIENT_SECRET
+  timeout: 2m
+  cookieTtl: 1h
+
+redis:
+  url: redis://your.redis.test:6379/0

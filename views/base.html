@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="de">
+    <head>
+        <title>{{ .Title }}</title>
+        <meta charset="utf-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+        {{ template "head" . }}
+
+        <link rel="icon" type="image/png" href="/static/img/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg" />
+        <link rel="shortcut icon" href="/static/img/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/img/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-title" content="{{ .Title }}" />
+        <link rel="manifest" href="/static/site.webmanifest" />
+    </head>
+    <body>
+        <main class="container">
+            <header class="text-center">
+                <img class="les-logo" alt="Leipzig eSports e.V. Logo" src="/static/img/les-logo.png">
+            </header>
+            <section class="content">
+            {{ template "content" . }}
+            </section>
+            <footer>
+            {{ template "footer" . }}
+            </footer>
+        </main>
+        {{ template "script" . }}
+    </body>
+</html>

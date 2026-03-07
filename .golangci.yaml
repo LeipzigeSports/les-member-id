@@ -1,0 +1,44 @@
+version: "2"
+linters:
+  default: all
+
+  disable:
+    - wsl
+
+  settings:
+    depguard:
+      rules:
+        main:
+          list-mode: original
+          allow:
+            - $gostd
+            - github.com/coreos/go-oidc
+            - github.com/golang-jwt/jwt/v5
+            - github.com/matoous/go-nanoid/v2
+            - github.com/redis/go-redis/v9
+            - github.com/yeqown/go-qrcode/v2
+            - github.com/yeqown/go-qrcode/writer/standard
+            - golang.org/x/oauth2
+            - github.com/LeipzigeSports/les-member-id/cmd
+            - github.com/LeipzigeSports/les-member-id/internal
+            - github.com/urfave/cli/v3
+            - github.com/urfave/cli-altsrc/v3
+    
+    exhaustruct:
+      allow-empty-declarations: true
+
+      exclude:
+        - 'github\.com/urfave/cli/v3\.Command'
+        - 'github\.com/urfave/cli/v3\.FlagBase'
+        - 'net/http\.Server'
+        - 'net/http\.Cookie'
+        - 'github\.com/coreos/go-oidc\.Config'
+        - 'github\.com/golang-jwt/jwt/v5\.RegisteredClaims'
+
+    varnamelen:
+      ignore-names:
+        - err
+      
+      ignore-decls:
+        - r *http.Request
+        - w http.ResponseWriter

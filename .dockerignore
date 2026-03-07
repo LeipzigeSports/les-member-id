@@ -1,0 +1,6 @@
+views
+static
+*.yaml
+.git
+.vscode
+docs

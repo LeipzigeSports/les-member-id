@@ -1,0 +1,51 @@
+.exp-container {
+    font-weight: 700;
+    font-style: italic;
+
+
+    max-width: 16rem;
+    width: 100%;
+    height: 2.5rem;
+    margin: 0 auto;
+    position: relative;
+}
+
+.exp {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    border: .2rem solid var(--les-orange);
+    border-radius: .25rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.exp.exp-bg {
+    background-color: var(--les-black);
+}
+
+.exp.exp-fg {
+    background-color: var(--les-orange);
+    color: var(--les-black);
+    transition: clip-path .5s ease;
+}
+
+.content *:first-child {
+    margin-top: 0;
+}
+
+.content {
+    /*display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;*/
+    text-align: center;
+}
+
+.qr img {
+    max-width: 200px;
+}
