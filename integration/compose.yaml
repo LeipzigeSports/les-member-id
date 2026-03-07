@@ -1,0 +1,19 @@
+services:
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.5
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME=http://localhost:9090
+      - KC_HTTP_PORT=9090
+    volumes:
+      - ./import:/opt/keycloak/data/import:ro
+    command: ["start-dev", "--import-realm"]
+    ports:
+      - "9090:9090"
