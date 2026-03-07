@@ -19,9 +19,9 @@ jobs:
         run: |
           CONVENTIONAL_COMMIT_REGEX='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([[:alnum:]._-]+\))?(!)?: ([[:alnum:]])+([[:space:][:print:]]*)'
           
-          echo "Checking \"${{ inputs.value }}\"..."
+          echo "Checking \"${{ github.event.pull_request.title }}\"..."
 
-          if ! echo "${{ inputs.value }}" | grep -iqE "$CONVENTIONAL_COMMIT_REGEX";
+          if ! echo "${{ github.event.pull_request.title }}" | grep -iqE "$CONVENTIONAL_COMMIT_REGEX";
           then
             echo "Input is not a valid conventional commit message."
             echo "Please refer the specification: https://www.conventionalcommits.org/en/v1.0.0/"
