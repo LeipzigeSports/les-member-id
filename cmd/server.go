@@ -26,46 +26,51 @@ import (
 )
 
 const (
-	defaultConfigFilePath = "config.yaml"
-	defaultBaseURL        = "http://localhost:8080"
-	defaultHost           = "0.0.0.0"
-	defaultPort           = 8080
-	defaultCodeLength     = 8
-	defaultCodeAlphabet   = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	defaultCodeTTL        = 5 * time.Minute
-	defaultQrFgColorHex   = "000000"
-	defaultQrBgColorHex   = "ffffff"
-	defaultQrBlockWidth   = 16
-	defaultOAuthTimeout   = 2 * time.Minute
-	defaultOAuthCookieTTL = 1 * time.Hour
-	defaultSiteTitle      = "Digital Member ID"
+	defaultConfigFilePath      = "config.yaml"
+	defaultBaseURL             = "http://localhost:8080"
+	defaultHost                = "0.0.0.0"
+	defaultPort                = 8080
+	defaultCodeLength          = 8
+	defaultCodeAlphabet        = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	defaultCodeTTL             = 5 * time.Minute
+	defaultQrFgColorHex        = "000000"
+	defaultQrBgColorHex        = "ffffff"
+	defaultQrBlockWidth        = 16
+	defaultOAuthTimeout        = 2 * time.Minute
+	defaultOAuthCookieTTL      = 1 * time.Hour
+	defaultSiteTitle           = "Digital Member ID"
+	defaultHealthCheckTimeout  = 5 * time.Second
+	defaultHealthCheckInterval = 10 * time.Second
 )
 
 // ErrServerCommand is a generic error for issues during the execution of the server run command.
 var ErrServerCommand = errors.New("error during server command execution")
 
 type serverConfig struct {
-	configFilePath    string
-	baseURL           string
-	host              string
-	port              int
-	codeLength        int
-	codeAlphabet      string
-	codeTTL           time.Duration
-	secretKey         string
-	qrFgColorHex      string
-	qrBgColorHex      string
-	qrBlockWidth      uint8
-	oauthRealmURL     string
-	oauthClientID     string
-	oauthClientSecret string
-	oauthTimeout      time.Duration
-	oauthCookieTRL    time.Duration
-	redisURL          string
-	siteTitle         string
+	configFilePath      string
+	baseURL             string
+	host                string
+	port                int
+	codeLength          int
+	codeAlphabet        string
+	codeTTL             time.Duration
+	secretKey           string
+	qrFgColorHex        string
+	qrBgColorHex        string
+	qrBlockWidth        uint8
+	oauthRealmURL       string
+	oauthClientID       string
+	oauthClientSecret   string
+	oauthTimeout        time.Duration
+	oauthCookieTRL      time.Duration
+	redisURL            string
+	siteTitle           string
+	healthCheckTimeout  time.Duration
+	healthCheckInterval time.Duration
 }
 
 const (
+	pathHealth    = "/healthz"
 	pathLogin     = "/oauth/login"
 	pathCallback  = "/oauth/callback"
 	pathVerify    = "/v"
@@ -189,10 +194,18 @@ func runServer(ctx context.Context, serverConfig serverConfig) error {
 		},
 	)
 
+	healthCheckService := svc.NewHealthCheckService(
+		ctx,
+		serverConfig.healthCheckTimeout,
+		serverConfig.healthCheckInterval,
+		rdb,
+	)
+
 	// set up mux
 	mux := http.NewServeMux()
 
 	mux.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("./static"))))
+	mux.HandleFunc(pathHealth, healthCheckService.Handle)
 	mux.HandleFunc(fmt.Sprintf("/qr/{%s}", pathParamCode), qrCodeService.Handle)
 	mux.HandleFunc(fmt.Sprintf("/v/{%s}", pathParamCode), verifierService.Handle)
 	mux.HandleFunc(pathCallback, authService.HandleCallback)
@@ -388,6 +401,20 @@ func BuildServerCommand() *cli.Command {
 				Value:       defaultSiteTitle,
 				Destination: &serverConfig.siteTitle,
 				Sources:     cli.NewValueSourceChain(cli.EnvVar("SITE_TITLE"), yamlSource("siteTitle", configFilePath)),
+			},
+			&cli.DurationFlag{
+				Name:        "health-check-timeout",
+				Usage:       "time until service is reported as down",
+				Value:       defaultHealthCheckTimeout,
+				Destination: &serverConfig.healthCheckTimeout,
+				Sources:     cli.NewValueSourceChain(cli.EnvVar("HEALTH_CHECK_TIMEOUT"), yamlSource("healthCheck.timeout", configFilePath)),
+			},
+			&cli.DurationFlag{
+				Name:        "health-check-interval",
+				Usage:       "time between service health checks",
+				Value:       defaultHealthCheckInterval,
+				Destination: &serverConfig.healthCheckInterval,
+				Sources:     cli.NewValueSourceChain(cli.EnvVar("HEALTH_CHECK_INTERVAL"), yamlSource("healthCheck.interval", configFilePath)),
 			},
 		},
 		Action: func(ctx context.Context, _ *cli.Command) error {

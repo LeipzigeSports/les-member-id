@@ -18,7 +18,7 @@ env:
 
 jobs:
   lint:
-    runs-on: docker
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
           version: v${{ env.GOLANGCI_LINT_VERSION }}
   
   test:
-    runs-on: docker
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
