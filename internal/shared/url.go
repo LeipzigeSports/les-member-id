@@ -1,4 +1,6 @@
 // Package shared contains functionality that is used across module depths.
+//
+//nolint:revive,nolintlint  // revive may sometimes not pick up on this for whatever reason
 package shared
 
 import "net/url"
