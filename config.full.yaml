@@ -23,3 +23,7 @@ oauth:
 
 redis:
   url: redis://your.redis.test:6379/0
+
+healthCheck:
+  timeout: 5s
+  interval: 10s
