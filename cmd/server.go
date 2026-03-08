@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/LeipzigeSports/les-member-id/internal/secure"
@@ -126,6 +127,14 @@ func runServer(ctx context.Context, serverConfig serverConfig) error {
 
 	rdb := redis.NewClient(rdbOpts)
 
+	// set up map for hashing static assets
+	fileHashMap := shared.FileHashMap{}
+	templateFuncMap := template.FuncMap{
+		"injectHashParam": func(staticAssetPath string) string {
+			return "/" + shared.InjectHashParameter(fileHashMap, strings.TrimPrefix(staticAssetPath, "/"))
+		},
+	}
+
 	// set up services
 	qrCodeService := svc.NewQrCodeService(
 		shared.MustJoinURLPath(serverConfig.baseURL, pathVerify),
@@ -162,7 +171,7 @@ func runServer(ctx context.Context, serverConfig serverConfig) error {
 		},
 	)
 
-	verifierTemplate, err := template.New("").ParseFiles("./views/base.html", "./views/verify.html")
+	verifierTemplate, err := template.New("").Funcs(templateFuncMap).ParseFiles("./views/base.html", "./views/verify.html")
 	if err != nil {
 		return fmt.Errorf("%w: %w", ErrServerCommand, err)
 	}
@@ -175,7 +184,7 @@ func runServer(ctx context.Context, serverConfig serverConfig) error {
 		pathParamCode,
 	)
 
-	memberTemplate, err := template.New("").ParseFiles("./views/base.html", "./views/member.html")
+	memberTemplate, err := template.New("").Funcs(templateFuncMap).ParseFiles("./views/base.html", "./views/member.html")
 	if err != nil {
 		return fmt.Errorf("%w: %w", ErrServerCommand, err)
 	}
