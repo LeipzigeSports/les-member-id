@@ -1,5 +1,5 @@
 {{ define "head" }}
-<link rel="stylesheet" type="text/css" href="/static/css/member.css">
+<link rel="stylesheet" type="text/css" href="{{ injectHashParam "/static/css/member.css" }}">
 {{ end }}
 {{ define "content" }}
 <h1 class="text-center">{{ .GivenName }} {{ .FamilyName }}</h1>
@@ -19,5 +19,5 @@
 {{ define "script" }}
 <input type="hidden" id="code-ttl" name="code-ttl" value="{{ .CodeTTLSecs }}">
 <input type="hidden" id="code-ttl-max" code="code-ttl-max" value="{{ .CodeTTLSecsMax }}">
-<script src="/static/js/member.js"></script>
+<script src="{{ injectHashParam "/static/js/member.js" }}"></script>
 {{ end }}
